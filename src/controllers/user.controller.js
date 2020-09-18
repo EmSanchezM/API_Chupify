@@ -71,7 +71,7 @@ userController.createUser = async(req, res=response)=>{
 userController.updateUser = async(req, res)=>{
     const id = req.params.user_id;
     try {
-        const userUpdate = User.findById(id);
+        const userUpdate = await User.findById(id);
 
         if(!userUpdate){
             return res.status(404).json({
@@ -79,10 +79,12 @@ userController.updateUser = async(req, res)=>{
                 message: 'No existe usuario con ese ID'
             });
         }
-        const {email, role, ...campos} = req.body;
-
+        
+        const {first_name, last_name, email, password, role} = req.body;
+        
         if(userUpdate.email !== email){
-            const existeEmail = await User.find({email});
+            const existeEmail = await User.findOne({email});
+            console.log('existe ',existeEmail)
             if(existeEmail){
                 return res.status(400).json({
                     ok:true,
@@ -92,8 +94,9 @@ userController.updateUser = async(req, res)=>{
         }
         
         //TODO: MODIFICAR ROLES DE USUARIO 
-
-        console.log(campos);
+        const roleID = await Role.findOne({role});
+        const campos = {first_name, last_name, email, password, roleID};
+        
         const userUpdated = await User.findByIdAndUpdate(id, campos, {new:true});
 
         res.status(200).json({
