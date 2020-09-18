@@ -8,3 +8,5 @@ mongoose.connect(config.MONGODB_URL, {
 })
     .then(db=> console.log('Mongo esta conectado'))
     .catch(err=> console.error('error in mongo', err))
+
+mongoose.set('useCreateIndex', true);
