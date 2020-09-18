@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const createRoles = require('./helpers/initSetup')
 
 const userRoute = require('./routes/user.routes');
+const authRoute = require('./routes/auth.routes');
 
 const app = express();
 createRoles();
@@ -16,5 +17,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/usuarios', userRoute);
+app.use('/api/auth', authRoute);
 
 module.exports = app;

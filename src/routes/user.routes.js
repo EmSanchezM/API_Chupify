@@ -4,9 +4,11 @@ const { validarCampos } = require('../middlewares/validarCampos');
 
 const router = Router();
 
-const {getUsers, createUser} = require('../controllers/user.controller');
+const {getUsers, getUserById, createUser} = require('../controllers/user.controller');
 
 router.get('/', getUsers);
+
+router.get('/:user_id', getUserById);
 
 router.post('/', 
     [

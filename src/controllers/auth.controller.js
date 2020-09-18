@@ -11,7 +11,7 @@ const authController = {};
 
 authController.registerUser = async(req, res=response)=>{
     //Necesito el email para verificar si existe y el password para encriptarlo
-    const {first_name, last_name, email, password, roles} = req.body;
+    const {first_name, last_name, email, password, role} = req.body;
     try {
         const existeEmail = await User.findOne({email});
         if(existeEmail){
@@ -25,19 +25,16 @@ authController.registerUser = async(req, res=response)=>{
             first_name,
             last_name,
             email,
-            password: await encryptPassword(password),
+            password: await User.encryptPassword(password),
         });
 
-        if(roles){
-            const foundRoles = await Role.find({name: {$in: roles}});
+        if(role){
+            const foundRoles = await Role.find({name: {$in: role}});
             newUser.role = foundRoles.map(role=> role._id);
         }else{
-            const role = await Role.findOne({name:'USER_ROLE'});
+            const role = await Role.findOne({name:'EMPRESA_ROLE'});
             newUser.role = [role._id];
         }
-
-        const salt = bcrypt.genSaltSync();
-        newUser.password = bcrypt.hashSync(password, salt);
 
         await newUser.save();
 
@@ -82,3 +79,5 @@ authController.loginUser = async(req, res)=>{
         token
     })
 }
+
+module.exports = authController;

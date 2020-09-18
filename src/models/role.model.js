@@ -9,6 +9,8 @@ const rolesValidos = {
 
 const roleSchemma = Schemma({
     name:{type: String, required:true, enum: rolesValidos}
+},{
+    versionKey: false
 })
 
 module.exports = mongoose.model('Role', roleSchemma);

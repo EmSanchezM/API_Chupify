@@ -1,25 +1,26 @@
 const { response } = require('express');
 
-const userController = {};
-
+//Modelos
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
-
+//Helpers
 const { generarJWT } = require('../helpers/jwt');
 
+const userController = {};
+
 userController.getUsers = async(req, res)=>{
-    const users = await User.find();
+    const users = await User.find().populate('role');
     return res.json(users);
 }
 
 userController.getUserById = async(req, res)=>{
-    const user = await User.findById(req.params.user_id)
+    const user = await User.findById(req.params.user_id).populate('role')
     return res.status(200).json(user);
 }
 
 userController.createUser = async(req, res=response)=>{
     //Necesito el email para verificar si existe y el password para encriptarlo
-    const {email, password, roles} = req.body;
+    const {first_name, last_name, email, password, role} = req.body;
     try {
         const existeEmail = await User.findOne({email});
         if(existeEmail){
@@ -33,15 +34,14 @@ userController.createUser = async(req, res=response)=>{
             first_name,
             last_name,
             email,
-            password: await encryptPassword(password),
+            password: await User.encryptPassword(password),
         });
 
-
-        if(roles){
-            const foundRoles = await Role.find({name: {$in: roles}});
+        if(role){
+            const foundRoles = await Role.find({name: {$in: role}});
             newUser.role = foundRoles.map(role=> role._id);
         }else{
-            const role = await Role.findOne({name:'USER_ROLE'});
+            const role = await Role.findOne({name:'EMPRESA_ROLE'});
             newUser.role = [role._id];
         }
 
