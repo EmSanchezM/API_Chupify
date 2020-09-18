@@ -1,9 +1,13 @@
 const express = require("express");
 const helmet = require('helmet');
-const morgan = require('morgan')
+const morgan = require('morgan');
 
-const userRoute = require('./routes/user.routes')
-const app = express()
+const createRoles = require('./helpers/initSetup')
+
+const userRoute = require('./routes/user.routes');
+
+const app = express();
+createRoles();
 
 app.set("port", process.env.PORT || 4000);
 app.use(helmet());
@@ -11,6 +15,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/', userRoute);
+app.use('/api/usuarios', userRoute);
 
 module.exports = app;

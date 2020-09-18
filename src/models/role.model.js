@@ -8,8 +8,7 @@ const rolesValidos = {
 };
 
 const roleSchemma = Schemma({
-    name:{type: String, required:true, enum: rolesValidos} ,
-    permissions: [{type:Schemma.Types.ObjectId, ref:"Permission"}]
+    name:{type: String, required:true, enum: rolesValidos}
 })
 
 module.exports = mongoose.model('Role', roleSchemma);

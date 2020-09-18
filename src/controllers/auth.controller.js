@@ -1,25 +1,17 @@
 const { response } = require('express');
+const bcrypt = require('bcryptjs');
 
-const userController = {};
-
+//Modelos
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
-
+//Helpers
 const { generarJWT } = require('../helpers/jwt');
 
-userController.getUsers = async(req, res)=>{
-    const users = await User.find();
-    return res.json(users);
-}
+const authController = {};
 
-userController.getUserById = async(req, res)=>{
-    const user = await User.findById(req.params.user_id)
-    return res.status(200).json(user);
-}
-
-userController.createUser = async(req, res=response)=>{
+authController.registerUser = async(req, res=response)=>{
     //Necesito el email para verificar si existe y el password para encriptarlo
-    const {email, password, roles} = req.body;
+    const {first_name, last_name, email, password, roles} = req.body;
     try {
         const existeEmail = await User.findOne({email});
         if(existeEmail){
@@ -36,7 +28,6 @@ userController.createUser = async(req, res=response)=>{
             password: await encryptPassword(password),
         });
 
-
         if(roles){
             const foundRoles = await Role.find({name: {$in: roles}});
             newUser.role = foundRoles.map(role=> role._id);
@@ -44,6 +35,9 @@ userController.createUser = async(req, res=response)=>{
             const role = await Role.findOne({name:'USER_ROLE'});
             newUser.role = [role._id];
         }
+
+        const salt = bcrypt.genSaltSync();
+        newUser.password = bcrypt.hashSync(password, salt);
 
         await newUser.save();
 
@@ -64,4 +58,27 @@ userController.createUser = async(req, res=response)=>{
     }
 }
 
-module.exports = userController;
+authController.loginUser = async(req, res)=>{
+    const userFound = await User.findOne({email: req.body.email}).populate('role');
+    
+    if(!userFound) return res.status(200).json({
+        ok:false,
+        message: 'Usuario no encontrado'
+    });
+
+    const passwordCoincide = await User.comparePassword(req.body.password, userFound.password);
+
+    if(!passwordCoincide) return res.status(401).json({
+        ok:false,
+        message: 'Contraseña no válida',
+        token: null
+    });
+
+    const token = await generarJWT(userFound._id)
+    return res.status(200).json({
+        ok: true,
+        message: 'Inicio de sesion Bienvenido!',
+        userFound,
+        token
+    })
+}
