@@ -93,7 +93,7 @@ userController.updateUser = async(req, res)=>{
             }
         }
         
-        //TODO: MODIFICAR ROLES DE USUARIO 
+        // MODIFICAMOS EL ROL DE USUARIO 
         const roleID = await Role.findOne({role});
         const campos = {first_name, last_name, email, password, roleID};
         
@@ -133,7 +133,11 @@ userController.deleteUser = async(req, res)=>{
             message: 'Usuario eliminado'
         });
     } catch (error) {
-        
+        console.error('ERROR ', error);
+        res.status(500).json({
+            ok:false,
+            message: 'No se eliminado.. Error inesperado, revisa logs'
+        })        
     }
 }
 

@@ -10,7 +10,7 @@ const { generarJWT } = require('../helpers/jwt');
 const authController = {};
 
 authController.registerUser = async(req, res=response)=>{
-    //Necesito el email para verificar si existe y el password para encriptarlo
+    //Recordatorio: Necesito el email para verificar si existe y el password para encriptarlo
     const {first_name, last_name, email, password, role} = req.body;
     try {
         const existeEmail = await User.findOne({email});
@@ -27,10 +27,13 @@ authController.registerUser = async(req, res=response)=>{
             email,
             password: await User.encryptPassword(password),
         });
-
+        /*
+        Si en el formulario viene el rol, buscamos en la BD y le asignamos
+        sino le asignamos un rol por defecto.
+        */ 
         if(role){
             const foundRoles = await Role.find({name: {$in: role}});
-            newUser.role = foundRoles.map(role=> role._id);
+            newUser.role = foundRoles.map(role => role._id);
         }else{
             const role = await Role.findOne({name:'EMPRESA_ROLE'});
             newUser.role = [role._id];
@@ -74,7 +77,7 @@ authController.loginUser = async(req, res)=>{
     const token = await generarJWT(userFound._id)
     return res.status(200).json({
         ok: true,
-        message: 'Inicio de sesion Bienvenido!',
+        message: `Inicio de sesion, Bienvenido ${userFound.first_name} ${userFound.last_name}!`,
         userFound,
         token
     })
