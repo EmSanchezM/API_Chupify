@@ -16,15 +16,15 @@ const durationValidas = {
 };
 
 const preciosValidos = {
-    values: [0, 6550, 10550],
+    values: ['0', '6550', '10550'],
     message: '{VALUE} no es un precio permitido'
 }
 
 const planesPagoSchemma = Schemma({
-    name: [{type: String, required: true, enum: planesValidos}],
-    duration: [{type: String, required:true, enum: durationValidas}],
-    price: [{type:Number, required:true, enum: preciosValidos }],
-    description: [{type:String, required: [true, 'Descripcion del plan requerida']}]
+    name: {type: String, required: true, enum: planesValidos},
+    duration: {type: String, required:true, enum: durationValidas},
+    price: {type:String, required:true, enum: preciosValidos },
+    description: {type:String, required: [true, 'Descripcion del plan requerida']}
 },{
     timestamps: true,
     versionKey: false,
