@@ -7,9 +7,8 @@ const createRoles = async()=>{
        const countRoles = await Role.estimatedDocumentCount();
        const countPlanes = await PlanesPago.estimatedDocumentCount();
        
-       if(countRoles>0) return;
-       if(countPlanes>0) return;
-
+       if(countRoles>0 && countPlanes>0) return;
+       
         const valuesRoles = Promise.all([
             new Role({name:"ADMIN_ROLE"}).save(),
             new Role({name:"EMPRESA_ROLE"}).save(),
