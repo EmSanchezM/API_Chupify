@@ -3,15 +3,22 @@ const { response } = require('express');
 //Modelos
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
-const Empresa = require('../models/empresa.model');
+const Empresa = require('../models/empresa.model')
 //Helpers
 const { generarJWT } = require('../helpers/jwt');
 
-const authController = {};
+const empresaController = {};
 
-authController.registerUser = async(req, res=response)=>{
-    //Recordatorio: Necesito el email para verificar si existe y el password para encriptarlo
+//Obtener todos las empresa
+empresaController.getEmpresas = async(req, res)=>{
+    const empresas = await Empresa.find().populate('user');
+    return res.json(empresas);
+}
+
+empresaController.createEmpresa = async(req, res=response)=>{
+
     const {first_name, last_name, email, password, role, name, rubro, tienda} = req.body;
+    
     try {
         const existeEmail = await User.findOne({email});
         const existeTienda = await Empresa.findOne({tienda});
@@ -50,7 +57,8 @@ authController.registerUser = async(req, res=response)=>{
 
         await newUser.save();
 
-        const userID = newUser._id
+        const userID = newUser.id
+        console.log(userID);
 
         const empresaNew = new Empresa({
             usuario: userID,
@@ -61,12 +69,11 @@ authController.registerUser = async(req, res=response)=>{
 
         await empresaNew.save();
 
-        const token = await generarJWT(newUser.id)
+        //const token = await generarJWT(newUser.id)
 
         res.json({
             ok:true,
-            newUser,
-            token
+            empresaNew
         });
 
     } catch (error) {
@@ -76,31 +83,7 @@ authController.registerUser = async(req, res=response)=>{
             message: 'Error inesperado..revisa logs'
         })
     }
+
 }
 
-authController.loginUser = async(req, res)=>{
-    const userFound = await User.findOne({email: req.body.email}).populate('role');
-    
-    if(!userFound) return res.status(200).json({
-        ok:false,
-        message: 'Usuario no encontrado'
-    });
-
-    const passwordCoincide = await User.comparePassword(req.body.password, userFound.password);
-
-    if(!passwordCoincide) return res.status(401).json({
-        ok:false,
-        message: 'Contraseña no válida',
-        token: null
-    });
-
-    const token = await generarJWT(userFound._id)
-    return res.status(200).json({
-        ok: true,
-        message: `Inicio de sesion, Bienvenido ${userFound.first_name} ${userFound.last_name}!`,
-        userFound,
-        token
-    })
-}
-
-module.exports = authController;
+module.exports = empresaController;
