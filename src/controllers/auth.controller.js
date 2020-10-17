@@ -4,6 +4,7 @@ const { response } = require('express');
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
 const Empresa = require('../models/empresa.model');
+const PlanPago = require('../models/planesPago.model');
 //Helpers
 const { generarJWT } = require('../helpers/jwt');
 
