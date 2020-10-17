@@ -81,7 +81,6 @@ authController.registerUser = async(req, res=response)=>{
         res.json({
             ok:true,
             token,
-            newUser,
             empresaNew
         });
 
