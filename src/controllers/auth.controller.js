@@ -11,7 +11,8 @@ const authController = {};
 
 authController.registerUser = async(req, res=response)=>{
     //Recordatorio: Necesito el email para verificar si existe y el password para encriptarlo
-    const {first_name, last_name, email, password, role, name, rubro, tienda} = req.body;
+    const {first_name, last_name, email, password, role, name, rubro, tienda, planpay} = req.body;
+    
     try {
         const existeEmail = await User.findOne({email});
         const existeTienda = await Empresa.findOne({tienda});
@@ -34,7 +35,7 @@ authController.registerUser = async(req, res=response)=>{
             first_name,
             last_name,
             email,
-            password: await User.encryptPassword(password),
+            password: await User.encryptPassword(password)
         });
         /*
         Si en el formulario viene el rol, buscamos en la BD y le asignamos
@@ -50,7 +51,8 @@ authController.registerUser = async(req, res=response)=>{
 
         await newUser.save();
 
-        const userID = newUser._id
+        const userID = newUser.id
+        console.log(userID);
 
         const empresaNew = new Empresa({
             usuario: userID,
@@ -59,14 +61,27 @@ authController.registerUser = async(req, res=response)=>{
             tienda
         });
 
+        /*
+        Si en el formulario viene el plan de pago, buscamos en la BD y le asignamos
+        sino le asignamos un plan gratis por defecto.
+        */ 
+        if(planpay){
+            const foundPlanes = await PlanPago.find({name: {$in: planpay}});
+            empresaNew.plan_pago = foundPlanes.map(plan => plan._id);
+        }else{
+            const planpay = await PlanPago.findOne({name:'GRATIS'});
+            empresaNew.plan_pago = [planpay._id];
+        }
+
         await empresaNew.save();
 
         const token = await generarJWT(newUser.id)
 
         res.json({
             ok:true,
+            token,
             newUser,
-            token
+            empresaNew
         });
 
     } catch (error) {

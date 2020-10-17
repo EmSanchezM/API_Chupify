@@ -3,21 +3,37 @@ const { response } = require('express');
 //Modelos
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
-const Empresa = require('../models/empresa.model')
+const Empresa = require('../models/empresa.model');
+const PlanPago = require('../models/planesPago.model');
 //Helpers
 const { generarJWT } = require('../helpers/jwt');
 
 const empresaController = {};
 
-//Obtener todos las empresa
+//Obtener todos las empresas
 empresaController.getEmpresas = async(req, res)=>{
-    const empresas = await Empresa.find().populate('user');
+    const empresas = await Empresa.find()
+                                  .populate('usuario').populate('role')
+                                  .populate('plan_pago');
     return res.json(empresas);
+}
+
+//Obtener empresa por ID: empresa_id
+empresaController.getEmpresaById = async(req, res)=>{
+    try {
+        const empresa = await Empresa.findById(req.params.empresa_id)
+                                     .populate('usuario')
+                                     .populate('plan_pago')
+                                     
+        return res.status(200).json(empresa);
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 empresaController.createEmpresa = async(req, res=response)=>{
 
-    const {first_name, last_name, email, password, role, name, rubro, tienda} = req.body;
+    const {first_name, last_name, email, password, role, name, rubro, tienda, planpay} = req.body;
     
     try {
         const existeEmail = await User.findOne({email});
@@ -41,7 +57,7 @@ empresaController.createEmpresa = async(req, res=response)=>{
             first_name,
             last_name,
             email,
-            password: await User.encryptPassword(password),
+            password: await User.encryptPassword(password)
         });
         /*
         Si en el formulario viene el rol, buscamos en la BD y le asignamos
@@ -67,12 +83,25 @@ empresaController.createEmpresa = async(req, res=response)=>{
             tienda
         });
 
+        /*
+        Si en el formulario viene el plan de pago, buscamos en la BD y le asignamos
+        sino le asignamos un plan gratis por defecto.
+        */ 
+        if(planpay){
+            const foundPlanes = await PlanPago.find({name: {$in: planpay}});
+            empresaNew.plan_pago = foundPlanes.map(plan => plan._id);
+        }else{
+            const planpay = await PlanPago.findOne({name:'GRATIS'});
+            empresaNew.plan_pago = [planpay._id];
+        }
+
         await empresaNew.save();
 
-        //const token = await generarJWT(newUser.id)
+        const token = await generarJWT(newUser.id)
 
         res.json({
             ok:true,
+            token,
             empresaNew
         });
 
@@ -83,7 +112,6 @@ empresaController.createEmpresa = async(req, res=response)=>{
             message: 'Error inesperado..revisa logs'
         })
     }
-
 }
 
 module.exports = empresaController;

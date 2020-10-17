@@ -2,10 +2,14 @@ const {Router} = require('express');
 const { check } = require('express-validator');
 
 const router = Router();
-const { getEmpresas, createEmpresa } = require('../controllers/empresa.controller')
+const { getEmpresas, getEmpresaById, createEmpresa } = require('../controllers/empresa.controller')
 
 //Ruta: Obtener todas los empresas
 router.get('/', getEmpresas);
+
+//Ruta: Obtener una empresa por ID
+router.get('/:empresa_id', getEmpresaById);
+//TODO: Genera error al obtener empresa por id
 
 router.post('/', createEmpresa);
 

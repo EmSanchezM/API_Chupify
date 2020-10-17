@@ -64,7 +64,6 @@ userController.createUser = async(req, res=response)=>{
         await newUser.save();
 
         const userID = newUser.id
-        console.log(userID);
 
         const empresaNew = new Empresa({
             usuario: userID,

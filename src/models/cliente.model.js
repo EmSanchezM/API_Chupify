@@ -6,7 +6,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 const Schemma = mongoose.Schema;
 
 const clienteSchemma = Schemma({
-    selacome: [{type: String, required: [true, 'es necesario que te la comas']}],
     usuario: [{type: Schemma.Types.ObjectId, ref: "User"}]
 },{
     timestamps: true,
