@@ -13,7 +13,8 @@ const empresaController = {};
 //Obtener todos las empresas
 empresaController.getEmpresas = async(req, res)=>{
     const empresas = await Empresa.find()
-                                  .populate('usuario').populate('role')
+                                  .populate('usuario')
+                                  .populate('role')
                                   .populate('plan_pago');
     return res.json(empresas);
 }
@@ -23,6 +24,7 @@ empresaController.getEmpresaById = async(req, res)=>{
     try {
         const empresa = await Empresa.findById(req.params.empresa_id)
                                      .populate('usuario')
+                                     .populate('role')
                                      .populate('plan_pago')
                                      
         return res.status(200).json(empresa);
@@ -74,8 +76,7 @@ empresaController.createEmpresa = async(req, res=response)=>{
         await newUser.save();
 
         const userID = newUser.id
-        console.log(userID);
-
+        
         const empresaNew = new Empresa({
             usuario: userID,
             name,

@@ -26,11 +26,15 @@ const planesPagoSchemma = Schemma({
     price: {type:String, required:true, enum: preciosValidos },
     description: {type:String, required: [true, 'Descripcion del plan requerida']}
 },{
-    timestamps: true,
-    versionKey: false,
+    versionKey: false
 })
 
 
 planesPagoSchemma.plugin(uniqueValidator, {message: '{PATH} debe ser unico'});
+
+planesPagoSchemma.method('toJSON', function(){
+    const {_v, ...object } = this.toObject();
+    return object;
+})
 
 module.exports = mongoose.model('PlanPago', planesPagoSchemma);
