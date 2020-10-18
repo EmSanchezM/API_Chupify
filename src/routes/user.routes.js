@@ -4,7 +4,7 @@ const { validarCampos } = require('../middlewares/validarCampos');
 
 const router = Router();
 
-const {getUsers, getUserById, createUser, updateUser, deleteUser} = require('../controllers/user.controller');
+const {getUsers, getUserById, getUserByEmail, createUser, updateUser, deleteUser} = require('../controllers/user.controller');
 
 //TODO: Validar token
 
@@ -13,6 +13,9 @@ router.get('/', getUsers);
 
 //Ruta: Obtener un usuario por ID
 router.get('/:user_id', getUserById);
+
+//Ruta: Pbtener un usuario por email
+router.get('/:email', getUserByEmail);
 
 //Ruta: Crear un usuario
 router.post('/', 

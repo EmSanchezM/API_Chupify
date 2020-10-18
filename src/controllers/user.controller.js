@@ -20,6 +20,15 @@ userController.getUserById = async(req, res)=>{
     return res.status(200).json(user);
 }
 
+//Obtener usuario por email
+userController.getUserByEmail = async(req, res)=>{
+    const regex = new RegExp(req.params.email, 'i')
+    const user = await User.findOne({email: {$eq: regex}}, (error, response)=>{
+        if(error) res.send(error);
+    })
+    return res.status(200).json(user);
+}
+
 //Crear un usuario
 userController.createUser = async(req, res=response)=>{
     //Necesito el email para verificar si existe y el password para encriptarlo
