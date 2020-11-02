@@ -9,7 +9,6 @@ router.get('/', getEmpresas);
 
 //Ruta: Obtener una empresa por ID
 router.get('/:empresa_id', getEmpresaById);
-//TODO: Genera error al obtener empresa por id
 
 router.post('/', createEmpresa);
 

@@ -14,7 +14,7 @@ router.get('/', getUsers);
 //Ruta: Obtener un usuario por ID
 router.get('/:user_id', getUserById);
 
-//Ruta: Pbtener un usuario por email
+//Ruta: Obtener un usuario por email
 router.get('/:email', getUserByEmail);
 
 //Ruta: Crear un usuario
