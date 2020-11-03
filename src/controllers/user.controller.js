@@ -32,23 +32,15 @@ userController.getUserByEmail = async(req, res)=>{
 //Crear un usuario
 userController.createUser = async(req, res=response)=>{
     //Necesito el email para verificar si existe y el password para encriptarlo
-    const {first_name, last_name, email, password, role, name, rubro, tienda} = req.body;
+    const {first_name, last_name, email, password, role } = req.body;
 
     try {
         const existeEmail = await User.findOne({email});
-        const existeTienda = await Empresa.findOne({tienda});
-
+        
         if(existeEmail){
             return res.status(400).json({
                 ok:false,
                 message: 'El email ya esta registrado'
-            });
-        }
-
-        if(existeTienda){
-            return res.status(400).json({
-                ok:false,
-                message: 'El nombre de la tienda ya existe'
             });
         }
 
@@ -72,23 +64,11 @@ userController.createUser = async(req, res=response)=>{
 
         await newUser.save();
 
-        const userID = newUser.id
-
-        const empresaNew = new Empresa({
-            usuario: userID,
-            name,
-            rubro,
-            tienda
-        });
-
-        await empresaNew.save();
-
         const token = await generarJWT(newUser.id)
 
         res.json({
             ok:true,
             newUser,
-            empresaNew,
             token
         });
 
