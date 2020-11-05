@@ -98,7 +98,7 @@ userController.updateUser = async(req, res)=>{
         
         if(userUpdate.email !== email){
             const existeEmail = await User.findOne({email});
-            console.log('existe ',existeEmail)
+            //console.log('existe ',existeEmail)
             if(existeEmail){
                 return res.status(400).json({
                     ok:true,
@@ -150,7 +150,7 @@ userController.deleteUser = async(req, res)=>{
         console.error('ERROR ', error);
         res.status(500).json({
             ok:false,
-            message: 'No se eliminado.. Error inesperado, revisa logs'
+            message: 'No se ha eliminado.. Error inesperado, revisa logs'
         })        
     }
 }

@@ -5,25 +5,10 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const Schemma = mongoose.Schema;
 
-const planesValidos = {
-    values: ['GRATIS', 'BASICO', 'PROFESIONAL'],
-    message: '{VALUE} no es un plan permitido'
-};
-
-const durationValidas = {
-    values: ['1 mes', '6 meses', '1 año'],
-    message: '{VALUE} no es una duracion permitida'
-};
-
-const preciosValidos = {
-    values: ['0', '6550', '10550'],
-    message: '{VALUE} no es un precio permitido'
-}
-
 const planesPagoSchemma = Schemma({
-    name: {type: String, required: true, enum: planesValidos},
-    duration: {type: String, required:true, enum: durationValidas},
-    price: {type:String, required:true, enum: preciosValidos },
+    name: {type: String, required: [true, 'Nombre del plan requerido']},
+    duration: {type: String, required:[true, 'Duracion del plan requerido']},
+    price: {type:String, required:[true, 'Precio del plan requerido']},
     description: {type:String, required: [true, 'Descripcion del plan requerida']}
 },{
     versionKey: false

@@ -115,4 +115,81 @@ empresaController.createEmpresa = async(req, res=response)=>{
     }
 }
 
+empresaController.updateEmpresa = async(req, res) =>{
+    const id = req.params.empresa_id;
+    try {
+        const empresaUpdate = await Empresa.findById(id);
+        if(!empresaUpdate){
+            return res.status(404).json({
+                ok:false,
+                message: 'No existe empresa con ese ID'
+            });
+        }
+        const { name, rubro, tienda, first_name, last_name, email, password, role, pago } = req.body;
+
+        if(empresaUpdate.tienda !== tienda){
+            const existeTienda = await Empresa.findOne({tienda});
+            //console.log('existe ', existeTienda);
+            if(existeTienda){
+                return res.status(400).json({
+                    ok: false,
+                    message: 'Ya existe una tienda con ese nombre'
+                });
+            }
+        }
+        
+        const roleID = await Role.findOne({role});
+
+        if(empresaUpdate.usuario !== null){
+            const camposUser = {first_name, last_name, email, password, roleID};
+            /* SI EXISTE: ACTUALIZA*/
+            await User.findByIdAndUpdate(empresaUpdate.usuario, camposUser, {new: true});   
+        }
+         
+        const pagoID = await PlanPago.findOne({pago});
+        const userID = await User.findOne({email});
+    
+        const camposEmpresa = {name, rubro, tienda, userID, pagoID};
+
+        const empresaUpdated = await Empresa.findByIdAndUpdate(id, camposEmpresa, {new:true});
+
+        res.status(200).json({
+            ok: true,
+            message: 'Empresa actualizada',
+            empresa: empresaUpdated
+        })
+    } catch (error) {
+        console.error('ERROR ', error);
+        res.status(500).json({
+            ok:false,
+            message: 'ERROR inesperado.. revisa logs'
+        })
+    }
+}
+
+empresaController.deleteEmpresa = async(req, res)=>{
+    const id = req.params.empresa_id;
+    try {
+        const empresa = await Empresa.findById(id);
+        if(!empresa){
+            return res.status(404).json({
+                ok:false,
+                message: 'No existe empresa con ese ID'
+            });
+        }
+        await Empresa.findByIdAndDelete(id);
+
+        res.json({
+            ok: true,
+            message: 'Empresa eliminada'
+        });
+    } catch (error) {
+        console.error('ERROR ', error);
+        res.status(500).json({
+            ok:false,
+            message: 'No se ha eliminado. Error SERVER, revisa logs'
+        })
+    }
+}
+
 module.exports = empresaController;
