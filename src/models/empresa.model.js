@@ -16,9 +16,4 @@ const empresaSchemma = Schemma({
 
 empresaSchemma.plugin(uniqueValidator, {message: '{PATH} debe ser unico'});
 
-empresaSchemma.method('toJSON', function(){
-    const {_v, ...object } = this.toObject();
-    return object;
-})
-
 module.exports = mongoose.model('Empresa', empresaSchemma);

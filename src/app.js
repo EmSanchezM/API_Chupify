@@ -10,6 +10,7 @@ const busquedaRoute = require('./routes/busquedas.routes');
 const authRoute = require('./routes/auth.routes');
 const empresaRoute = require('./routes/empresa.routes');
 const planesRoute = require('./routes/planes.routes');
+const plantillasRoute = require('./routes/plantilla.routes');
 
 const app = express();
 createRoles();
@@ -26,5 +27,6 @@ app.use('/api/buscar', busquedaRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/empresas', empresaRoute);
 app.use('/api/planespago', planesRoute);
+app.use('/api/plantillas', plantillasRoute);
 
 module.exports = app;
