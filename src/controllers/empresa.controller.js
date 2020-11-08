@@ -35,7 +35,7 @@ empresaController.getEmpresaById = async(req, res)=>{
 
 empresaController.createEmpresa = async(req, res=response)=>{
 
-    const {first_name, last_name, email, password, role, name, rubro, tienda, planpay} = req.body;
+    const {first_name, last_name, email, password, role, name, rubro, tienda, pago} = req.body;
     
     try {
         const existeEmail = await User.findOne({email});
@@ -88,9 +88,12 @@ empresaController.createEmpresa = async(req, res=response)=>{
         Si en el formulario viene el plan de pago, buscamos en la BD y le asignamos
         sino le asignamos un plan gratis por defecto.
         */ 
-        if(planpay){
-            const foundPlanes = await PlanPago.find({name: {$in: planpay}});
+        if(pago){
+
+            const foundPlanes = await PlanPago.find({name: {$in: pago}});
+            console.log(foundPlanes)
             empresaNew.plan_pago = foundPlanes.map(plan => plan._id);
+            console.log('ID ', empresaNew.plan_pago)
         }else{
             const planpay = await PlanPago.findOne({name:'GRATIS'});
             empresaNew.plan_pago = [planpay._id];
@@ -145,8 +148,8 @@ empresaController.updateEmpresa = async(req, res) =>{
             /* SI EXISTE: ACTUALIZA*/
             await User.findByIdAndUpdate(empresaUpdate.usuario, camposUser, {new: true});   
         }
-         
-        const pagoID = await PlanPago.findOne({pago});
+        
+        const pagoID = await PlanPago.findOne({'name': pago});
         const userID = await User.findOne({email});
     
         const camposEmpresa = {name, rubro, tienda, userID, pagoID};
