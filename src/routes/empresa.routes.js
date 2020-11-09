@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const { check } = require('express-validator');
-const {validarCampos} = require('../middlewares/validarCampos');
+const {validarCampos} = require('/src/middlewares/validarCampos');
 
 const router = Router();
 const { getEmpresas, getEmpresaById, createEmpresa, updateEmpresa, deleteEmpresa } = require('../controllers/empresa.controller');
