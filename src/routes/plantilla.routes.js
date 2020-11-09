@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { validatCampos } = require('../middlewares/ValidarCampos');
+const { validarCampos } = require('../middlewares/validar-campos');
 
 const router = Router();
 const { getPlantillas, getPlantillaById } = require('../controllers/plantilla.controller');
