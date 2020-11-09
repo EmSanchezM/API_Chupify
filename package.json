@@ -2,7 +2,7 @@
   "name": "api_chupify",
   "version": "1.0.0",
   "description": "Proyecto de IS-912 con el Ing. Erick Marín",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
