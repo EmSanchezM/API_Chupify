@@ -2,6 +2,7 @@ const fs = require('fs');
 
 /*MODELOS*/
 const Empresa = require('../models/empresa.model');
+const Plantillas = require('../models/plantillas.model');
 
 const borrarArchivo = ( ruta ) => {
     if(fs.existsSync( ruta)){
@@ -13,21 +14,34 @@ const actualizarArchivo = async(tipo, id, nombreArchivo)=>{
     let rutaVieja = '';
 
     switch(tipo){
-        case 'empresa': 
-            const empresa = await Empresa.findById(id);
-            if(!empresa){
-                console.log('EMPRESA no encontrada');
+        case 'plantilla': 
+            const plantilla = await Plantillas.findById(id);
+            if(!plantilla){
+                console.log('Plantilla no encontrada');
                 return false;
             }
 
-            rutaVieja = `archivos/empresas/${empresa.img}`;
+            rutaVieja = `archivos/plantillas/${plantilla.imagenes}`;
             borrarArchivo(rutaVieja);
-            empresa.img = nombreArchivo;
-            await empresa.save();
+            plantilla.imagenes = nombreArchivo;
+            await plantilla.save();
             return true;
         break;
+        
+        case 'producto':
+            const producto = await producto.findById(id);
+            if(!producto){
+                console.log('Producto no encontrado');
+                return false;
+            }
 
-
+            rutaVieja = `archivos/productos/${producto.img}`;
+            borrarArchivo(rutaVieja);
+            producto.img = nombreArchivo;
+            await producto.save();
+            return true;
+        break;
+        
     }
 }
 

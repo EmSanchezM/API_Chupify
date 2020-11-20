@@ -12,6 +12,7 @@ const empresaRoute = require('./routes/empresa.routes');
 const planesRoute = require('./routes/planes.routes');
 const plantillasRoute = require('./routes/plantilla.routes');
 const archivosRoute = require('./routes/archivos.routes');
+const productosRoute = require('./routes/productos.routes');
 
 const app = express();
 createRoles();
@@ -30,5 +31,6 @@ app.use('/api/empresas', empresaRoute);
 app.use('/api/planespago', planesRoute);
 app.use('/api/plantillas', plantillasRoute);
 app.use('/api/archivos', archivosRoute);
+app.use('/api/productos', productosRoute);
 
 module.exports = app;

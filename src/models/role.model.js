@@ -13,9 +13,4 @@ const roleSchemma = Schemma({
     versionKey: false
 })
 
-roleSchemma.method('toJSON', function(){
-    const {_v, ...object } = this.toObject();
-    return object;
-})
-
 module.exports = mongoose.model('Role', roleSchemma);

@@ -26,9 +26,4 @@ userSchemma.statics.comparePassword = async(password, receivedPassword)=>{
 
 userSchemma.plugin(uniqueValidator, {message: '{PATH} debe ser unico'});
 
-userSchemma.method('toJSON', function(){
-    const {_v, ...object } = this.toObject();
-    return object;
-})
-
 module.exports = mongoose.model('User', userSchemma);
