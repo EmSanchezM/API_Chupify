@@ -9,7 +9,7 @@ const subirArchivo = (req, res= response) =>{
     const tipo = req.params.tipo;
     const id = req.params.id;
 
-    const tiposValidos = ['empresas', 'temas'];
+    const tiposValidos = ['empresas', 'temas', 'productos'];
     if(!tiposValidos.includes(tipo)){
         return res.status(400).json({
             ok: false,
